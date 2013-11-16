@@ -36,4 +36,17 @@ class PoliticiansToWords:
         return heapq.nlargest(n, top)
 
 
+#bioguide_to_ie.csv
+def id_to_bioid():
+    import csv
+
+    mapping = dict()
+
+    with open('bioguide_to_ie.csv', 'rb') as csvfile:
+        reader = csv.reader(csvfile, delimeter=',')
+        for row in reader:
+            mapping[row[1]] = row[0]
+
+    return mapping
+
 print PoliticiansToWords.top_words(['A000022','L000551'], 0)
