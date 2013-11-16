@@ -41,13 +41,9 @@ for x in recipients.keys():
 names = open('names_to_ids.json')
 name_to_id = json.load(names)
 for name, ids in name_to_id.iteritems():
-    try:
-       for x in ids:
-           iemoney = ie_to_money[x]
-           names_to_money[name] += iemoney
-    except:
-        pass
+   for id in ids:
+       iemoney = ie_to_money.get(x,0)
+       names_to_money[name] += iemoney
 
-def get_sorted_values():
-    sorted = sorted(names_to_money.items(), key=itemgetter(1))
-    return sorted
+sortednames = sorted(names_to_money.items(), key=itemgetter(1))
+sorted_ids = [ (name_to_id[x],y) for x,y in sortednames if x in name_to_id]
