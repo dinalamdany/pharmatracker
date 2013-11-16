@@ -43,5 +43,7 @@ for name, ids in name_to_id.iteritems():
        iemoney = ie_to_money.get(id,0)
        names_to_money[name] += iemoney
 
-sortednames = sorted(names_to_money.items(), key=itemgetter(1))
-sorted_ids = [ (name_to_id[x],y) for x,y in sortednames if x in name_to_id]
+def get_sorted_ids():
+    sortednames = sorted(names_to_money.items(), key=itemgetter(1))
+    sorted_ids = [ (name_to_id[x],y) for x,y in sortednames if x in name_to_id]
+    return sorted_ids
