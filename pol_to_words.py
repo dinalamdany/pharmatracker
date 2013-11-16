@@ -16,6 +16,25 @@ class PoliticiansToWords:
         
         return [(word['count'], word['ngram']) for word in words]
 
+    #returns number of times a congressperson has used the word, given the bioguide id
+    @classmethod
+    def get_politician_count(cls,word,politician_id):
+        request_uri = 'http://capitolwords.org/api/1/text.json?phrase='+str(word)+'pharmaceutical&bioguide_id=' + str(politician_id) +'&apikey' + str(cls.api_key)
+        response = urllib2.urlopen(request_uri)
+        
+        words = json.loads(response.read())
+        return words['num_found']
+
+    @classmethod
+    def get_frequencies(cls, top_word_list, politician_list):
+        frequencies = []
+        for politican in politician_list:
+            sum = 0
+            for word in top_word_list:
+                sum += PoliticiansToWords.get_politician_count(word,politician)
+            frequencies.append((politician,sum))
+        return frequencies
+
     # returns top N words from total of politician ids, or 0 for all
     @classmethod
     def top_words(cls, politician_ids, n=20):
