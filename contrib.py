@@ -48,4 +48,6 @@ for name, ids in name_to_id.iteritems():
     except:
         pass
 
-sorted = sorted(names_to_money.items(), key=itemgetter(1))
+def get_sorted_values():
+    sorted = sorted(names_to_money.items(), key=itemgetter(1))
+    return sorted
