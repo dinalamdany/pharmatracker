@@ -2,8 +2,8 @@ import csv
 recipients = dict()
 with open('final_mapping_committee-to-entity.csv', 'rU') as csvfile:
     reader = csv.reader(csvfile)
-    for row in reader:
-        recipients[row[0]] = row[1]
+    for key,value in reader:
+        recipients[key] = value
 donations1 = dict()
 donations2 = dict()
 with open('contributions.csv','rU') as csvfile:
