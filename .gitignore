@@ -1,2 +1,3 @@
 *.swp
 secrets.py
+.DS_Store
