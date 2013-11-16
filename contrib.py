@@ -1,10 +1,13 @@
 import json
+from operator import itemgetter
 import csv
+
 recipients = dict()
 with open('final_mapping_committee-to-entity.csv', 'rU') as csvfile:
     reader = csv.reader(csvfile)
     for key,value in reader:
         recipients[key] = value
+
 fec_to_money = dict()
 names_to_money = dict()
 with open('contributions.csv','rU') as csvfile:
@@ -26,6 +29,7 @@ with open('contributions.csv','rU') as csvfile:
                 fec_to_money[row[25]] = money
             except:
                 fec_to_money[row[25]] = abs(float(row[7]))
+
 ie_to_money= dict()
 for x in recipients.keys():
     try:
@@ -43,3 +47,5 @@ for name, ids in name_to_id.iteritems():
            names_to_money[name] += iemoney
     except:
         pass
+
+sorted = sorted(names_to_money.items(), key=itemgetter(1))
