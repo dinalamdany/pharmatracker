@@ -13,24 +13,27 @@ class PoliticiansToWords:
 
         response = urllib2.urlopen(request_uri)
         words = json.loads(response.read())
-
+        
         return [(word['count'], word['ngram']) for word in words]
 
-    # returns top N words from total of politician ids
+    # returns top N words from total of politician ids, or 0 for all
+    @classmethod
     def top_words(cls, politician_ids, n=20):
         words = dict()
 
         for pol_id in politician_ids:
-            top_pol = PoliticianToWords.get_words_from_politician(pol_id)
+            top_pol = cls.get_words_from_politician(pol_id)
 
             for count, word in top_pol:
-                words[word] = count if not words[word] else count + words[word]     
-    
+                words[word] = count + words.get(word, 0)
 
-        top = heapify([(count, word) for count, word in words])
+        top = [(count, word) for word, count in words.iteritems()]
+        heapq.heapify(top)
+
+        if n == 0:
+            n = len(top)
 
         return heapq.nlargest(n, top)
 
-     
-     
-PoliticiansToWords.get_words_from_politician('L000551')
+
+print PoliticiansToWords.top_words(['A000022','L000551'], 0)
