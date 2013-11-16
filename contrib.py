@@ -14,17 +14,17 @@ with open('contributions.csv','rU') as csvfile:
         elif row[25][0] == 'N':
             try:
                 money = donations2[row[24]]
-                money += float(row[7])
+                money += abs(float(row[7]))
                 donations2[row[24]] = money
             except:
-                donations2[row[24]] = float(row[7])
+                donations2[row[24]] = abs(float(row[7]))
         elif row[25][0] == 'C':
             try:
                 money = donations1[row[25]]
-                money += float(row[7])
+                money += abs(float(row[7]))
                 donations1[row[25]] = money
             except:
-                donations1[row[25]] = float(row[7])
+                donations1[row[25]] = abs(float(row[7]))
 mapped = dict()
 for x in recipients.keys():
     try:
