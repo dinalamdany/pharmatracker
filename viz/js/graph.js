@@ -1,8 +1,8 @@
 d3.text("data/fake_data.csv", function(datasetText) {
 	//Width and height
-	var w = 500;
-	var h = 100;
-	var padding = 20;
+	var w = 600;
+	var h = 300;
+	var padding = 50;
 
 	var dataset = d3.csv.parseRows(datasetText);
 
@@ -29,6 +29,7 @@ d3.text("data/fake_data.csv", function(datasetText) {
 					  .scale(yScale)
 					  .orient("left")
 					  .ticks(5);
+
 	//Create SVG element
 	var svg = d3.select("body")
 				.append("svg")
@@ -48,11 +49,23 @@ d3.text("data/fake_data.csv", function(datasetText) {
 	   .attr("r", function(d) {
 	   		return rScale(d[1]);
 		})
-	   .style("fill", "pink")
+
+   	   .attr("fill", function(d) {
+   	   			if(d[3] == "R"){
+   	   				return "red";
+   	   			}
+   	   			else if(d[3] == "D"){
+   	   				return "blue";
+   	   			}
+				else{
+					return "green";
+				}
+		   })
+
+	   //.style("fill", "pink")
 
 	   .on("mouseover", function(d) {
 	   		//highlight color
-	   		d3.select(this).style("fill", "aliceblue");
 			//Get this bar's x/y values, then augment for the tooltip
 			var xPosition = parseFloat(d3.select(this).attr("cx"));
 			var yPosition = parseFloat(d3.select(this).attr("cy"));
@@ -62,23 +75,20 @@ d3.text("data/fake_data.csv", function(datasetText) {
 			   .attr("x", xPosition)
 			   .attr("y", yPosition)
 			   .attr("text-anchor", "middle")
-			   .attr("font-family", "sans-serif")
-			   .attr("font-size", "11px")
-			   .attr("font-weight", "bold")
-			   .attr("fill", "red")
-			   .text(d.join());
-
-
+			   .attr("font-family", "serif")
+			   .attr("font-size", "14px")
+			    //.attr("font-weight", "bold")
+			   .attr("fill", "black")
+			   .text(d.join(" "));
 		})
+
 		.on("mouseout", function() {
 			//unhighlight
-			d3.select(this).style("fill", "pink");
 			//Remove the tooltip
 			d3.select("#tooltip").remove();
 			
 		});
 
-			
 		//Create X axis
 		svg.append("g")
 			.attr("class", "axis")
@@ -90,27 +100,37 @@ d3.text("data/fake_data.csv", function(datasetText) {
 			.attr("class", "axis")
 			.attr("transform", "translate(" + padding + ",0)")
 			.call(yAxis);
+		
+		//X axis Label
+		svg.append("text")
+		    .attr("class", "x label")
+		    .attr("text-anchor", "end")
+		    .attr("x", w - 20)
+		    .attr("y", h - 5)
+		    .text("income per capita, inflation-adjusted (dollars)");
+
+		//Y axis Label
+	    svg.append("text")
+		    .attr("class", "y label")
+		    .attr("text-anchor", "end")
+		    .attr("y", 0)
+		    .attr("dy", ".75em")
+		    .attr("transform", "rotate(-90)")
+		    .text("life expectancy (years)");
+
+		 //Title
+		svg.append("text")
+		        .attr("x", (w / 2) - padding)             
+		        .attr("y", 20)
+		        .text("Hello Title")
 });
 
 
 
-/*
-	svg.selectAll("text")
-	   .data(dataset)
-	   .enter()
-	   .append("text")
-	   .text(function(d) {
-	   		return d[1] + "," + d[2];
-	   })
-	   .attr("x", function(d) {
-	   		return xScale(d[1]);
-	   })
-	   .attr("y", function(d) {
-	   		return yScale(d[2]);
-	   })
-	   .attr("font-family", "sans-serif")
-	   .attr("font-size", "11px")
-	   .attr("fill", "red");
 
-});
-*/
+
+
+
+
+
+
