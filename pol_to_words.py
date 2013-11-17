@@ -4,6 +4,7 @@ import contrib as Contrib
 import urllib2 
 import json
 import heapq
+import csv
 
 class PoliticiansToWords:
     api_key = Secrets.sunlight_key
@@ -20,19 +21,21 @@ class PoliticiansToWords:
     #returns number of times a congressperson has used the word, given the bioguide id
     @classmethod
     def get_politician_count(cls,word,politician_id):
-        request_uri = 'http://capitolwords.org/api/1/text.json?phrase='+str(word)+'pharmaceutical&bioguide_id=' + str(politician_id) +'&apikey' + str(cls.api_key)
+        request_uri = 'http://capitolwords.org/api/1/text.json?phrase='+str(word)+'&bioguide_id=' + str(politician_id) +'&apikey=' + str(cls.api_key)
+        print request_uri
         response = urllib2.urlopen(request_uri)
-        
+
         words = json.loads(response.read())
         return words['num_found']
 
     @classmethod
     def get_frequencies(cls, top_word_list, politician_list):
         frequencies = []
-        for politican in politician_list:
+        politician_list = politician_list[0:5]
+        for politician in politician_list:
             sum = 0
             for word in top_word_list:
-                sum += PoliticiansToWords.get_politician_count(word,politician)
+                sum += cls.get_politician_count(word,politician)
             frequencies.append((politician,sum))
         return frequencies
 
@@ -63,7 +66,6 @@ class PoliticiansToWords:
 
 #bioguide_to_ie.csv
 def id_to_bioid():
-    import csv
 
     mapping = dict()
 
@@ -74,20 +76,61 @@ def id_to_bioid():
 
     return mapping
 
-id_list = Contrib.get_sorted_ids()
-id_list = [x for x,y in id_list[-53:-3]]
-id_list = [y for x in id_list for y in x]
 
-bioids = set()
+#id_list = Contrib.get_sorted_ids()
+#id_list = [x for x,y in id_list[-53:-3]]
+#id_list = [y for x in id_list for y in x]
+#
+#
+#bioids = set()
 mapping = id_to_bioid()
+#for id in id_list:
+#    if id in mapping:
+#        bioids.add(mapping[id])
+#    else:
+#        pass
+#
+#
+#words = PoliticiansToWords.top_words(list(bioids), 50)
+#took out more words
+words = ['health', 'tax', 'president', 'care', 'medicare', 'consent', 'insurance', 'unanimous', 'budget', 'drug', 'energy', 'rights', 'law', 'majority', 'education', 'seniors', 'oil', 'prescription', 'nuclear', 'patients', 'plan', 'debt', 'research', 'water', 'cancer', 'benefit']
+
+id_list = [y for x in [a for a,b in Contrib.get_sorted_ids()] for y in x]
+bioids = set()
+
 for id in id_list:
     if id in mapping:
         bioids.add(mapping[id])
     else:
         pass
 
+points = PoliticiansToWords.get_frequencies(words, list(bioids))
 
-words = PoliticiansToWords.top_words(list(bioids), 50)
-#took out more words
-words = ['health', 'tax', ' president', 'care', 'medicare', 'consent', 'insurance', 'unanimous', 'budget', 'drug', 'energy', 'rights', 'law', 'majority', 'education', 'seniors', 'oil', 'prescription', 'nuclear', 'patients', 'plan', 'debt', 'research', 'water', 'cancer', 'benefit']
+names = open('names_to_ids.json')
+name_to_ids = json.load(names)
+bioid_to_id = dict(zip(mapping.values(), mapping.keys()))
 
+id_to_name = dict()
+
+for name,ids in name_to_ids.iteritems():
+    for id in ids:
+        id_to_name[id] = name
+
+
+csv_list = []
+for point in points:
+    bioid, freq = point #TODO fix this when loading from json
+    id = bioid_to_id[bioid]
+    name = id_to_name[id]
+    if id in Contrib.ie_to_money:
+            csv_list.append([name, Contrib.ie_to_money[id], freq, name[-2]])
+
+
+with open('graph.csv', 'w') as csvfile:
+    csvwriter = csv.writer(csvfile)
+    for point in csv_list:
+        point = [str(p) for p in point]
+        csvwriter.writerow(point)
+
+
+print "Wrote to graph.csv"
