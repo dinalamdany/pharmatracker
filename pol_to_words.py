@@ -7,7 +7,7 @@ import heapq
 import csv
 
 class PoliticiansToWords:
-    api_key = Secrets.sunlight_key
+    api_key = 'testkey12' #Secrets.sunlight_key
     
     @classmethod
     def get_words_from_politician(cls, politician_id):
@@ -94,7 +94,7 @@ mapping = id_to_bioid()
 #
 #words = PoliticiansToWords.top_words(list(bioids), 50)
 #took out more words
-words = ['health', 'tax', 'president', 'care', 'medicare', 'consent', 'insurance', 'unanimous', 'budget', 'drug', 'energy', 'rights', 'law', 'majority', 'education', 'seniors', 'oil', 'prescription', 'nuclear', 'patients', 'plan', 'debt', 'research', 'water', 'cancer', 'benefit']
+words = ['health', 'tax', 'president', 'care', 'medicare', 'consent', 'insurance', 'unanimous', 'budget', 'drug', 'rights', 'law', 'majority', 'education', 'seniors', 'prescription', 'patients', 'plan', 'debt', 'research', 'water', 'cancer', 'benefit']
 
 id_list = [y for x in [a for a,b in Contrib.get_sorted_ids()] for y in x]
 bioids = set()
@@ -105,7 +105,12 @@ for id in id_list:
     else:
         pass
 
-points = PoliticiansToWords.get_frequencies(words, list(bioids))
+#points = PoliticiansToWords.get_frequencies(words, list(bioids))
+#f = open('data.json', 'w')
+#f.write(json.dumps(points))
+
+f = open('data.json', 'r')
+points = json.loads(f.read())
 
 names = open('names_to_ids.json')
 name_to_ids = json.load(names)
@@ -120,11 +125,14 @@ for name,ids in name_to_ids.iteritems():
 
 csv_list = []
 for point in points:
-    bioid, freq = point #TODO fix this when loading from json
+    #bioid, freq = point #TODO fix this when loading from json
+    bioid = point[0]
+    freq = point[1]
+
     id = bioid_to_id[bioid]
     name = id_to_name[id]
-    if id in Contrib.ie_to_money:
-            csv_list.append([name, Contrib.ie_to_money[id], freq, name[-2]])
+    if name in Contrib.names_to_money:
+        csv_list.append([name, Contrib.names_to_money[name], freq, name[-2]])
 
 
 with open('graph.csv', 'w') as csvfile:
