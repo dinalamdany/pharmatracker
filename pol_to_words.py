@@ -28,6 +28,7 @@ class PoliticiansToWords:
         words = json.loads(response.read())
         return words['num_found']
 
+    #given list of top words and list of politicians' bioguide ids, returns list of tuples with (politician,frequency sum), with sum based on all words
     @classmethod
     def get_frequencies(cls, top_word_list, politician_list):
         frequencies = []
