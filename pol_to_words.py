@@ -94,7 +94,7 @@ mapping = id_to_bioid()
 #
 #words = PoliticiansToWords.top_words(list(bioids), 50)
 #took out more words
-words = ['health', 'tax', 'president', 'care', 'medicare', 'consent', 'insurance', 'unanimous', 'budget', 'drug', 'rights', 'law', 'majority', 'education', 'seniors', 'prescription', 'patients', 'plan', 'debt', 'research', 'water', 'cancer', 'benefit']
+words = ['health', 'tax', 'care', 'medicare', 'consent', 'insurance', 'budget', 'drug', 'rights', 'seniors', 'prescription', 'patients', 'plan', 'debt', 'research', 'cancer', 'benefit']
 
 id_list = [y for x in [a for a,b in Contrib.get_sorted_ids()] for y in x]
 bioids = set()
