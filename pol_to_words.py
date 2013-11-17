@@ -31,7 +31,6 @@ class PoliticiansToWords:
     @classmethod
     def get_frequencies(cls, top_word_list, politician_list):
         frequencies = []
-        politician_list = politician_list[0:5]
         for politician in politician_list:
             sum = 0
             for word in top_word_list:
@@ -105,32 +104,34 @@ for id in id_list:
         pass
 
 points = PoliticiansToWords.get_frequencies(words, list(bioids))
+f = open('data.json', 'w')
+f.write(json.dumps(points))
 
-names = open('names_to_ids.json')
-name_to_ids = json.load(names)
-bioid_to_id = dict(zip(mapping.values(), mapping.keys()))
-
-id_to_name = dict()
-
-for name,ids in name_to_ids.iteritems():
-    for id in ids:
-        id_to_name[id] = name
-
-
-csv_list = []
-for point in points:
-    bioid, freq = point #TODO fix this when loading from json
-    id = bioid_to_id[bioid]
-    name = id_to_name[id]
-    if id in Contrib.ie_to_money:
-            csv_list.append([name, Contrib.ie_to_money[id], freq, name[-2]])
-
-
-with open('graph.csv', 'w') as csvfile:
-    csvwriter = csv.writer(csvfile)
-    for point in csv_list:
-        point = [str(p) for p in point]
-        csvwriter.writerow(point)
-
-
-print "Wrote to graph.csv"
+#names = open('names_to_ids.json')
+#name_to_ids = json.load(names)
+#bioid_to_id = dict(zip(mapping.values(), mapping.keys()))
+#
+#id_to_name = dict()
+#
+#for name,ids in name_to_ids.iteritems():
+#    for id in ids:
+#        id_to_name[id] = name
+#
+#
+#csv_list = []
+#for point in points:
+#    bioid, freq = point #TODO fix this when loading from json
+#    id = bioid_to_id[bioid]
+#    name = id_to_name[id]
+#    if id in Contrib.ie_to_money:
+#            csv_list.append([name, Contrib.ie_to_money[id], freq, name[-2]])
+#
+#
+#with open('graph.csv', 'w') as csvfile:
+#    csvwriter = csv.writer(csvfile)
+#    for point in csv_list:
+#        point = [str(p) for p in point]
+#        csvwriter.writerow(point)
+#
+#
+#print "Wrote to graph.csv"
